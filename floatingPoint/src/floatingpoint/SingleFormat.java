@@ -31,17 +31,17 @@ public class SingleFormat implements Comparable, Cloneable {
 
         //Casos especiais
         if (Double.isNaN(num)) { // Not a Number
-            this.significando = Constantes.NAN.significando;
-            this.sinal = Constantes.NAN.sinal;
-            this.exponente = Constantes.NAN.exponente;
+            this.significando = SFConst.NAN.significando;
+            this.sinal = SFConst.NAN.sinal;
+            this.exponente = SFConst.NAN.exponente;
         } else if (num == Double.NEGATIVE_INFINITY) { // infinito negativo
-            this.significando = Constantes.MENOS_INFINITO.significando;
-            this.sinal = Constantes.MENOS_INFINITO.sinal;
-            this.exponente = Constantes.MENOS_INFINITO.exponente;
+            this.significando = SFConst.MENOS_INFINITO.significando;
+            this.sinal = SFConst.MENOS_INFINITO.sinal;
+            this.exponente = SFConst.MENOS_INFINITO.exponente;
         } else if (num == Double.POSITIVE_INFINITY) { // infinito positivo
-            this.significando = Constantes.INFINITO.significando;
-            this.sinal = Constantes.INFINITO.sinal;
-            this.exponente = Constantes.INFINITO.exponente;
+            this.significando = SFConst.INFINITO.significando;
+            this.sinal = SFConst.INFINITO.sinal;
+            this.exponente = SFConst.INFINITO.exponente;
         } else if (num == 0) { // numero for 0
             this.exponente = 0;
             this.significando = 0;
@@ -79,17 +79,17 @@ public class SingleFormat implements Comparable, Cloneable {
                 if (significando_double < 0) {
                     significando_double = 0;
                 }
-                significando = (long) (significando_double * Constantes.SIGNIFICANDO); //(valor * (1<<23))
+                significando = (long) (significando_double * SFConst.SIGNIFICANDO); //(valor * (1<<23))
 
             } else { // para numeros negativo (num<1)
                 exponente = (int) Math.ceil(-Math.log(num) / Math.log(2)); //> log_2 (Num)
-                significando = (long) (((num * Math.pow(2, exponente) - 1) * Constantes.SIGNIFICANDO));
+                significando = (long) (((num * Math.pow(2, exponente) - 1) * SFConst.SIGNIFICANDO));
                 exponente = -exponente;
             }
 
             //colocar o exponente em representacao polarizada
             if (num != 0) {
-                exponente = exponente + Constantes.POLARIZACAO;
+                exponente = exponente + SFConst.POLARIZACAO;
             }
 
         }
@@ -148,42 +148,42 @@ public class SingleFormat implements Comparable, Cloneable {
         } //SE Somaddos NUMEROS OpostoS, RESULTADO VALE 0
         else if (this.exponente == n2.exponente && this.significando == n2.significando && this.sinal != n2.sinal
                 && this.exponente < 0x7f) {
-            return new SingleFormat(Constantes.ZERO);
+            return new SingleFormat(SFConst.ZERO);
         } //um dos eh NAN
         else if (this.exponente == 0xff && this.significando != 0 || n2.exponente == 0xff && n2.significando != 0) {
-            return new SingleFormat(Constantes.NAN);
+            return new SingleFormat(SFConst.NAN);
         } else if (this.exponente == 0xff && this.significando == 0 && this.sinal == 0) {
             if (n2.exponente == 0xff && n2.significando == 0 && n2.sinal == 1) {
-                return new SingleFormat(Constantes.NAN);
+                return new SingleFormat(SFConst.NAN);
             } else {
-                return new SingleFormat(Constantes.INFINITO);
+                return new SingleFormat(SFConst.INFINITO);
             }
         } else if (this.exponente == 0xff && this.significando == 0 && this.sinal == 1) {
             if (n2.exponente == 0xff && n2.significando == 0 && n2.sinal == 0) {
-                return new SingleFormat(Constantes.NAN);
+                return new SingleFormat(SFConst.NAN);
             } else {
-                return new SingleFormat(Constantes.MENOS_INFINITO);
+                return new SingleFormat(SFConst.MENOS_INFINITO);
             }
         } else if (n2.exponente == 0xff && n2.significando == 0 && n2.sinal == 0) {
             if (this.exponente == 0xff && this.significando == 0 && this.sinal == 1) {
-                return new SingleFormat(Constantes.NAN);
+                return new SingleFormat(SFConst.NAN);
             } else {
-                return new SingleFormat(Constantes.INFINITO);
+                return new SingleFormat(SFConst.INFINITO);
             }
         } else if (n2.exponente == 0xff && n2.significando == 0 && n2.sinal == 1) {
             if (this.exponente == 0xff && this.significando == 0 && this.sinal == 0) {
-                return new SingleFormat(Constantes.NAN);
+                return new SingleFormat(SFConst.NAN);
             } else {
-                return new SingleFormat(Constantes.MENOS_INFINITO);
+                return new SingleFormat(SFConst.MENOS_INFINITO);
             }
         }
 
         int exp1 = this.exponente;
-        long significando1 = this.significando | Constantes.SIGNIFICANDO;
+        long significando1 = this.significando | SFConst.SIGNIFICANDO;
         int sinal1 = this.sinal;
 
         int exp2 = n2.exponente;
-        long significando2 = n2.significando | Constantes.SIGNIFICANDO;
+        long significando2 = n2.significando | SFConst.SIGNIFICANDO;
         int sinal2 = n2.sinal;
 
         //ajustando os expoente e a significando
@@ -226,27 +226,104 @@ public class SingleFormat implements Comparable, Cloneable {
                 sinal1 = sinal2;
             }
             int dsp = 0; //descolamento 
-            while ((significando1 << dsp) < Constantes.SIGNIFICANDO) {
+            while ((significando1 << dsp) < SFConst.SIGNIFICANDO) {
                 dsp++;
             }
-            significando1 = (significando1 << dsp) & Constantes.BITS_SIGNIFICANDO;
+            significando1 = (significando1 << dsp) & SFConst.BITS_SIGNIFICANDO;
             exp1 -= dsp;
 
         } else {
             int dsp = (int) (significando1 >> 24) & 0x1;
             exp1 += dsp;
-            significando1 = (significando1 >> dsp) & Constantes.BITS_SIGNIFICANDO;//REMOVe O '1' IMPLÍCITO
+            significando1 = (significando1 >> dsp) & SFConst.BITS_SIGNIFICANDO;//REMOVe O '1' IMPLÍCITO
         }
         //overflow
         if (exp1 >= 0xff) {
             if (sinal1 == 0) {
-                return new SingleFormat(Constantes.MAX_SINGLE_FORMAT);
+                return new SingleFormat(SFConst.MAX_SINGLE_FORMAT);
             } else {
-                return new SingleFormat(Constantes.MIN_SINGLE_FORMAT);
+                return new SingleFormat(SFConst.MIN_SINGLE_FORMAT);
             }
         }
 
         return new SingleFormat(sinal1, exp1, significando1);
+    }
+
+    /**
+     *
+     * @param n2
+     * @return
+     */
+    public SingleFormat Diferenca(SingleFormat n2) {
+        //Trata casos especias
+
+        int exp1 = this.exponente;
+        long significando1 = this.significando | SFConst.SIGNIFICANDO;
+        int sinal1 = this.sinal;
+
+        int exp2 = n2.exponente;
+        long significando2 = n2.significando | SFConst.SIGNIFICANDO;
+        int sinal2 = (n2.sinal + 1) & 0x1;
+
+        if (exp1 > exp2){
+            if (exp1 - exp2 < 32){
+                significando2 = (significando2) >> (exp1 - exp2);
+            } else {
+                significando2 = 0;
+            }
+
+            //exp2 = exp1;
+        } else if (exp1 < exp2){
+            if (exp2 - exp1 < 32){
+                significando1 = (significando1) >> (exp2 - exp1);
+            } else {
+                significando1 = 0;
+            }
+           // exp1 = exp2;
+        }
+
+        if (sinal1 != sinal2){// se os operandos tem sinal diferente
+        
+            if (significando2 > significando1) {
+                significando1 = -significando1;
+            } else {
+                significando2 = -significando2;
+            }
+        }
+
+        significando1 = significando1 + significando2;
+
+        //
+        if (sinal1 != sinal2){//SE OS OPERANDOS TEM SINAL DIFERENTE
+
+            if (this.exponente < n2.exponente || (this.exponente == n2.exponente && this.significando < n2.significando)) {
+                sinal1 = sinal2;
+            }
+            int dsp = 0; //descolamento 
+            while ((significando1 << dsp) < SFConst.SIGNIFICANDO) {
+                dsp++;
+            }
+            significando1 = (significando1 << dsp) & SFConst.BITS_SIGNIFICANDO;
+            exp1 -= dsp;
+
+        } else {
+            int dsp = (int) (significando1 >> 24) & 0x1;
+            exp1 += dsp;
+            significando1 = (significando1 >> dsp) & SFConst.BITS_SIGNIFICANDO;//REMOVe O '1' IMPLÍCITO
+        }
+        //overflow
+        if (exp1 >= 0xff) {
+            if (sinal1 == 0) {
+                return new SingleFormat(SFConst.MAX_SINGLE_FORMAT);
+            } else {
+                return new SingleFormat(SFConst.MIN_SINGLE_FORMAT);
+            }
+        }
+
+        return new SingleFormat(sinal1, exp1, significando1);
+        
+       // return new SingleFormat(0, 0, 0);
+
     }
 
     /**
@@ -260,11 +337,11 @@ public class SingleFormat implements Comparable, Cloneable {
             return 0.0;
         } else if (this.significando == 0 && this.exponente == 0 && this.sinal == 1) {
             return -0.0;
-        } else if (this.significando == Constantes.INFINITO.significando && this.exponente == Constantes.INFINITO.exponente
-                && this.sinal == Constantes.INFINITO.sinal) {
+        } else if (this.significando == SFConst.INFINITO.significando && this.exponente == SFConst.INFINITO.exponente
+                && this.sinal == SFConst.INFINITO.sinal) {
             return Double.POSITIVE_INFINITY;
-        } else if (this.significando == Constantes.MENOS_INFINITO.significando && this.exponente == Constantes.MENOS_INFINITO.exponente
-                && this.sinal == Constantes.MENOS_INFINITO.sinal) {
+        } else if (this.significando == SFConst.MENOS_INFINITO.significando && this.exponente == SFConst.MENOS_INFINITO.exponente
+                && this.sinal == SFConst.MENOS_INFINITO.sinal) {
             return Double.NEGATIVE_INFINITY;
         } else if (this.exponente == 0xff && this.significando != 0) {
             return Double.NaN;
@@ -272,8 +349,8 @@ public class SingleFormat implements Comparable, Cloneable {
 
         //AJUSTA A SIGNIFICANDO, ADICIONANDO O 1 IMPLÍCITO:
         //OBS CRIAR UM METODO PARA ISSO..
-        double sign_double = (double) (this.significando | Constantes.SIGNIFICANDO) / Constantes.SIGNIFICANDO;
-        double real = sign_double * Math.pow(2, this.exponente - Constantes.POLARIZACAO);
+        double sign_double = (double) (this.significando | SFConst.SIGNIFICANDO) / SFConst.SIGNIFICANDO;
+        double real = sign_double * Math.pow(2, this.exponente - SFConst.POLARIZACAO);
 
         //Ajutar o sinal
         if (this.sinal == 1) {
@@ -318,11 +395,11 @@ public class SingleFormat implements Comparable, Cloneable {
     @Override
     public String toString() {
         //trata os casos especiais
-        if (this.compareTo(Constantes.INFINITO) == 0) {
+        if (this.compareTo(SFConst.INFINITO) == 0) {
             return "Infinito" + ": " + sinal + " " + Integer.toBinaryString(exponente) + " " + "00000000000000000000000";
-        } else if (this.compareTo(Constantes.MENOS_INFINITO) == 0) {
+        } else if (this.compareTo(SFConst.MENOS_INFINITO) == 0) {
             return "Menos Infinito" + ": " + sinal + " " + Integer.toBinaryString(exponente) + " " + "00000000000000000000000";
-        } else if (this.compareTo(Constantes.NAN) == 0) {
+        } else if (this.compareTo(SFConst.NAN) == 0) {
             return "NaN" + ": " + sinal + " " + Integer.toBinaryString(exponente) + " " + Long.toBinaryString(significando);
         } else if (this.exponente == 0 && this.significando == 0 && this.sinal == 0) {
             return "0.0" + " : " + sinal + " " + "00000000" + " " + "00000000000000000000000";

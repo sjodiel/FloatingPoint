@@ -9,7 +9,7 @@ package floatingpoint;
  *
  * @author sjodiel
  */
-public class Constantes {
+public class SFConst {
 
     //Polarizacao para simples precisao no IEEE754 = 2^10-1
     protected static final int POLARIZACAO = 0x7f;
