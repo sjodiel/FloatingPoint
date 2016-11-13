@@ -6,8 +6,8 @@
 package floatingpoint;
 
 /**
- * Single Format 
- * 
+ * Single Format
+ *
  * @author sjodiel
  */
 public class SingleFormat implements Comparable, Cloneable {
@@ -93,53 +93,6 @@ public class SingleFormat implements Comparable, Cloneable {
             }
 
         }
-    }
-
-    /**
-     * Imprime em uma String, no formato: Simple: Sinal Exponente Significando
-     *
-     * @return String seguindo o formato Simple: Sinal Expoente Significando
-     */
-    @Override
-    public String toString() {
-        //trata os casos especiais
-        if (this.compareTo(Constantes.INFINITO) == 0) {
-            return "Infinito" + ": " + sinal + " " + Integer.toBinaryString(exponente) + " " + "00000000000000000000000";
-        } else if (this.compareTo(Constantes.MENOS_INFINITO) == 0) {
-            return "Menos Infinito" + ": " + sinal + " " + Integer.toBinaryString(exponente) + " " + "00000000000000000000000";
-        } else if (this.compareTo(Constantes.NAN) == 0) {
-            return "NaN" + ": " + sinal + " " + Integer.toBinaryString(exponente) + " " + Long.toBinaryString(significando);
-        } else if (this.exponente == 0 && this.significando == 0 && this.sinal == 0) {
-            return "0.0" + " : " + sinal + " " + "00000000" + " " + "00000000000000000000000";
-        } else if (this.exponente == 0 && this.significando == 0 && this.sinal == 1) {
-            return "-0.0" + " : " + sinal + " " + "00000000" + " " + "00000000000000000000000";
-        }
-
-        String temp;
-        temp = Integer.toBinaryString(this.exponente);
-
-        //gera uma sequencia de bits para o expoente 
-        //e preenche com zeros a esquerda ate ter 8 bits
-        String exponente = "";
-        for (int i = temp.length(); i < 8; i++) {
-            exponente = exponente.concat("0");
-        }
-        exponente = exponente.concat(temp);
-
-        //gera uma sequencia de bits para a significando
-        //e preenche com zeros a esquerda ate que tenha 23 bits
-        temp = Long.toBinaryString(this.significando);
-
-        String significando = "";
-
-        for (int i = temp.length(); i < 23; i++) {
-            significando = significando.concat("0");
-        }
-        significando = significando.concat(temp);
-
-        return this.NumeroReal() + "" + " : " + sinal + " " + exponente + " " + significando;
-        //return sinal + "" + exponente + "" + significando;
-
     }
 
     /**
@@ -355,6 +308,53 @@ public class SingleFormat implements Comparable, Cloneable {
         } else {
             return new Long(this.significando).compareTo(op2.significando);
         }
+    }
+
+    /**
+     * Imprime em uma String, no formato: Simple: Sinal Exponente Significando
+     *
+     * @return String seguindo o formato Simple: Sinal Expoente Significando
+     */
+    @Override
+    public String toString() {
+        //trata os casos especiais
+        if (this.compareTo(Constantes.INFINITO) == 0) {
+            return "Infinito" + ": " + sinal + " " + Integer.toBinaryString(exponente) + " " + "00000000000000000000000";
+        } else if (this.compareTo(Constantes.MENOS_INFINITO) == 0) {
+            return "Menos Infinito" + ": " + sinal + " " + Integer.toBinaryString(exponente) + " " + "00000000000000000000000";
+        } else if (this.compareTo(Constantes.NAN) == 0) {
+            return "NaN" + ": " + sinal + " " + Integer.toBinaryString(exponente) + " " + Long.toBinaryString(significando);
+        } else if (this.exponente == 0 && this.significando == 0 && this.sinal == 0) {
+            return "0.0" + " : " + sinal + " " + "00000000" + " " + "00000000000000000000000";
+        } else if (this.exponente == 0 && this.significando == 0 && this.sinal == 1) {
+            return "-0.0" + " : " + sinal + " " + "00000000" + " " + "00000000000000000000000";
+        }
+
+        String temp;
+        temp = Integer.toBinaryString(this.exponente);
+
+        //gera uma sequencia de bits para o expoente 
+        //e preenche com zeros a esquerda ate ter 8 bits
+        String exponente = "";
+        for (int i = temp.length(); i < 8; i++) {
+            exponente = exponente.concat("0");
+        }
+        exponente = exponente.concat(temp);
+
+        //gera uma sequencia de bits para a significando
+        //e preenche com zeros a esquerda ate que tenha 23 bits
+        temp = Long.toBinaryString(this.significando);
+
+        String significando = "";
+
+        for (int i = temp.length(); i < 23; i++) {
+            significando = significando.concat("0");
+        }
+        significando = significando.concat(temp);
+
+        return this.NumeroReal() + "" + " : " + sinal + " " + exponente + " " + significando;
+        //return sinal + "" + exponente + "" + significando;
+
     }
 
 }
