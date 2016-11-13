@@ -6,7 +6,8 @@
 package floatingpoint;
 
 /**
- *
+ * Single Format 
+ * 
  * @author sjodiel
  */
 public class SingleFormat implements Comparable, Cloneable {
