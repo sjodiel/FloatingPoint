@@ -1,0 +1,10 @@
+# netbeans
+
+/floatingPoint/nbproject/private/
+/floatingPoint/build/
+/floatingPoint/nbbuild/
+/floatingPoint/dist/
+/floatingPoint/nbdist/
+/floatingPoint/.nb-gradle/
+/floatingPoint/*.txt
+/floatingPoint/src/floatingpoint/teste/
