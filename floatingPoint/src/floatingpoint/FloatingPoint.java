@@ -17,14 +17,15 @@ public class FloatingPoint {
     public static void main(String[] args) {
         System.out.println("");
         
-        SingleFormat a = new SingleFormat(7);
-        SingleFormat b = new SingleFormat(3);
+        SingleFormat a = new SingleFormat(2);
+        SingleFormat b = new SingleFormat(4);
         SingleFormat c = new SingleFormat(1);
         
         
         System.out.println(a.Soma(b)); 
         //System.out.println(a.Diferenca(b));
         System.out.println(a.Produto(b));
+        System.out.println(a.Divisao(b));
         //System.out.println(c.toString()); 
         //System.out.println(a.toString()); 
         

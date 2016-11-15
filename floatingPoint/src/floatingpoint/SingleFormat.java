@@ -396,6 +396,52 @@ public class SingleFormat implements Comparable, Cloneable {
     }
 
     /**
+     * Metodo Divisao
+     *
+     * @param n2
+     * @return
+     */
+    public SingleFormat Divisao(SingleFormat n2) {
+
+        //trata casos especiais
+        
+        
+        
+        
+        long s1 = this.significando | SFConst.SIGNIFICANDO;
+        long s2 = n2.significando | SFConst.SIGNIFICANDO;
+        long divisao = (s1 / SFConst.SIGNIFICANDO) / (s2 / SFConst.SIGNIFICANDO);
+        long significando_ = divisao * SFConst.SIGNIFICANDO;
+        int deslocamento = (s1 >= s2) ? 0 : 1;
+        significando_ = (significando_ << deslocamento) & SFConst.BITS_SIGNIFICANDO;
+        int expoente_ = this.expoente - n2.expoente + SFConst.POLARIZACAO - deslocamento;
+        int sinal_;
+
+        /*Ajuste do sinal 
+        +*+ = +
+        +*- = -
+        -*+ = -
+        -*- = +
+         */
+        if (((this.sinal + n2.sinal) & 0x1) == 0) {
+            sinal_ = 0;
+        } else {
+            sinal_ = 1;
+        }
+
+        if (expoente_ >= 0xff) {
+            if (sinal_ == 0) {
+                return new SingleFormat(SFConst.MAX_SINGLE_FORMAT);
+            } else {
+
+                return new SingleFormat(SFConst.MIN_SINGLE_FORMAT);
+            }
+        }
+
+        return new SingleFormat(sinal_, expoente_, significando_);
+    }
+
+    /**
      * Gera um numero real em formato simple: sinal + expoente + nantissa
      *
      * @return O nume no formato double
