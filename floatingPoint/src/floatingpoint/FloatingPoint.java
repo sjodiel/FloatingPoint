@@ -6,7 +6,7 @@
 package floatingpoint;
 
 /**
- *
+ * ARITMÉTICA EM PONTO FLUTUANTE PADRAO IEEE754
  * @author sjodiel
  */
 public class FloatingPoint {
@@ -17,16 +17,17 @@ public class FloatingPoint {
     public static void main(String[] args) {
         System.out.println("");
         
-        SingleFormat a = new SingleFormat(2);
-        SingleFormat b = new SingleFormat(4);
+        SingleFormat a = new SingleFormat(2f);
+        SingleFormat b = new SingleFormat(12f);
         SingleFormat c = new SingleFormat(1);
+        SingleFormat d = new SingleFormat((float)0.2);
         
         
         System.out.println(a.Soma(b)); 
         //System.out.println(a.Diferenca(b));
         System.out.println(a.Produto(b));
         System.out.println(a.Divisao(b));
-        //System.out.println(c.toString()); 
+        System.out.println(d.toString()); 
         //System.out.println(a.toString()); 
         
         
@@ -39,7 +40,7 @@ public class FloatingPoint {
         
         int exp, exp2, mantissa; 
         int sinal;
-        int num = 3;
+        double num = 0.2f;
         exp = (int) (Math.log(num) / Math.log(2)); // -> log_2 N (logaritmando/base do logaritmo)
         
         double base_exp = Math.pow(2, exp);// 2 a exp  

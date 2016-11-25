@@ -12,16 +12,16 @@ package floatingpoint;
 public class SFConst {
 
     //Polarizacao para simples precisao no IEEE754 = 2^10-1
-    protected static final int POLARIZACAO = 0x7f;
+    protected static final int POLARIZACAO = 0x7f; //127
 
     //Representa o valor limite para o significando em IEEE754 com simples precisao
     protected static final long SIGNIFICANDO = (1l << 23);
 
     //Representa os 23 bits que tem o significando 2^23-1
-    protected static final long BITS_SIGNIFICANDO = 0x7FFFFF;
-
+    protected static final long BITS_SIGNIFICANDO = 0x7FFFFF; //8388607
+ 
     //Representa o valor NAN no padrao IEEE754 com simples precisao
-    protected static final SingleFormat NAN = new SingleFormat(0, 0xff, (long) 1 << 23);
+    protected static final SingleFormat NAN = new SingleFormat(0, 0xff, (long) 1 << 23); // 255
 
     //Representa o valor INFINITO no padrao IEEE754 com simples precisao
     protected static final SingleFormat INFINITO = new SingleFormat(0, 0xff, 0);

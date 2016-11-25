@@ -138,7 +138,7 @@ public class SingleFormat implements Comparable, Cloneable {
      * @return
      */
     public SingleFormat Soma(SingleFormat n2) {
-
+        /*
         //TRATA os casos especias
         //um dos somando eh 0
         if (this.expoente == 0 && this.significando == 0) {
@@ -176,7 +176,7 @@ public class SingleFormat implements Comparable, Cloneable {
             } else {
                 return new SingleFormat(SFConst.MENOS_INFINITO);
             }
-        }
+        }*/
 
         int exp1 = this.expoente;
         long significando1 = this.significando | SFConst.SIGNIFICANDO;
@@ -403,17 +403,18 @@ public class SingleFormat implements Comparable, Cloneable {
      */
     public SingleFormat Divisao(SingleFormat n2) {
 
-        //trata casos especiais
+        /*trata casos especiais como: 2/0 retorna infinity  
+        */
         
         
         
-        
-        long s1 = this.significando | SFConst.SIGNIFICANDO;
-        long s2 = n2.significando | SFConst.SIGNIFICANDO;
-        long divisao = (s1 / SFConst.SIGNIFICANDO) / (s2 / SFConst.SIGNIFICANDO);
-        long significando_ = divisao * SFConst.SIGNIFICANDO;
+        long s1 = (this.significando | SFConst.SIGNIFICANDO);
+        long s2 = (n2.significando | SFConst.SIGNIFICANDO);
+        float divisao = ( (float) s1 / SFConst.SIGNIFICANDO) / ( (float) s2 / SFConst.SIGNIFICANDO);
+        //long significando_ = (long)(divisao * SFConst.SIGNIFICANDO);
         int deslocamento = (s1 >= s2) ? 0 : 1;
-        significando_ = (significando_ << deslocamento) & SFConst.BITS_SIGNIFICANDO;
+        //significando_ = (significando_ << deslocamento) & SFConst.BITS_SIGNIFICANDO;
+        long significando_ = ((long)(divisao * SFConst.SIGNIFICANDO) << deslocamento) & SFConst.BITS_SIGNIFICANDO;
         int expoente_ = this.expoente - n2.expoente + SFConst.POLARIZACAO - deslocamento;
         int sinal_;
 
