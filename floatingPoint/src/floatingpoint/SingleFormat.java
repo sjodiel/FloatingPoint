@@ -135,17 +135,17 @@ public class SingleFormat implements Comparable, Cloneable {
      * Metodo de SOMA
      *
      * @param n2
-     * @return
+     * @return Retorna o resultado da soma no formato IEEE 754
      */
     public SingleFormat Soma(SingleFormat n2) {
-        /*
+
         //TRATA os casos especias
         //um dos somando eh 0
         if (this.expoente == 0 && this.significando == 0) {
             return new SingleFormat(n2);
         } else if (n2.expoente == 0 && n2.significando == 0) {
             return new SingleFormat(this);
-        } //SE Somaddos NUMEROS OpostoS, RESULTADO VALE 0
+        } //somandos numeros opostos, resultado eh0
         else if (this.expoente == n2.expoente && this.significando == n2.significando && this.sinal != n2.sinal
                 && this.expoente < 0x7f) {
             return new SingleFormat(SFConst.ZERO);
@@ -176,7 +176,7 @@ public class SingleFormat implements Comparable, Cloneable {
             } else {
                 return new SingleFormat(SFConst.MENOS_INFINITO);
             }
-        }*/
+        }
 
         int exp1 = this.expoente;
         long significando1 = this.significando | SFConst.SIGNIFICANDO;
@@ -187,8 +187,8 @@ public class SingleFormat implements Comparable, Cloneable {
         int sinal2 = n2.sinal;
 
         //ajustando os expoente e a significando
-        //Adiciona no signficando o 1.0 que IEEE 754 tem implicito
-        //Se o 1 operando eh > 2, desloca o significando do segundo para a direita
+        //Adiciona no signficando o 1.0, que no IEEE 754 tem implicito
+        //Se o 1 numero eh > 2, desloca o significando do segundo para a direita
         //Se o 2 > 1,descocla o signficando do primeiro para a direita
         if (exp1 > exp2) {
             if (exp1 - exp2 < 32) {
@@ -207,7 +207,7 @@ public class SingleFormat implements Comparable, Cloneable {
             exp1 = exp2;
         }
 
-        if (sinal1 != sinal2) // se os operandos tem sinal diferente
+        if (sinal1 != sinal2) // se os numeros tem sinal diferente // significando
         {
             if (significando2 > significando1) {
                 significando1 = -significando1;
@@ -219,7 +219,7 @@ public class SingleFormat implements Comparable, Cloneable {
         significando1 = significando1 + significando2;
 
         //
-        if (sinal1 != sinal2) //SE OS OPERANDOS TEM SINAL DIFERENTE
+        if (sinal1 != sinal2) //SE OS NUMEROS TEM SINAL DIFERENTE, trata expoente
         {
 
             if (this.expoente < n2.expoente || (this.expoente == n2.expoente && this.significando < n2.significando)) {
@@ -253,10 +253,49 @@ public class SingleFormat implements Comparable, Cloneable {
      * Metodo da Diferença
      *
      * @param n2
-     * @return
+     * @return Retorna o resultado da diferença no formato IEEE 754
      */
     public SingleFormat Diferenca(SingleFormat n2) {
+
         //Trata casos especias
+        //Um dos numeros/somandos eh 0: 0 - (2) = -2
+        if (this.expoente == 0 && this.significando == 0) {
+            return new SingleFormat(n2).Oposto();
+            //return new SingleFormat(n2);
+        } else if (n2.expoente == 0 && n2.significando == 0) {
+            return new SingleFormat(this);
+        }
+        //Diferença de dois numeros negativo -2 - (-2) = 0;
+        else if (this.expoente == n2.expoente && this.significando == n2.significando && this.sinal == n2.sinal) {
+            return new SingleFormat(SFConst.ZERO);
+        } //um dos numeros eh NAN
+        else if (this.expoente == 0xff && this.significando != 0 || n2.expoente == 0xff && n2.significando != 0) {
+            return new SingleFormat(SFConst.NAN);
+        } else if (this.expoente == 0xff && this.significando == 0 && this.sinal == 0) {
+            if (n2.expoente == 0xff && n2.significando == 0 && n2.sinal == 0) {
+                return new SingleFormat(SFConst.NAN);
+            } else {
+                return new SingleFormat(SFConst.INFINITO);
+            }
+        } else if (this.expoente == 0xff && this.significando == 0 && this.sinal == 1) {
+            if (n2.expoente == 0xff && n2.significando == 0 && n2.sinal == 1) {
+                return new SingleFormat(SFConst.NAN);
+            } else {
+                return new SingleFormat(SFConst.MENOS_INFINITO);
+            }
+        } else if (n2.expoente == 0xff && n2.significando == 0 && n2.sinal == 0) {
+            if (this.expoente == 0xff && this.significando == 0 && this.sinal == 0) {
+                return new SingleFormat(SFConst.NAN);
+            } else {
+                return new SingleFormat(SFConst.MENOS_INFINITO);
+            }
+        } else if (n2.expoente == 0xff && n2.significando == 0 && n2.sinal == 1) {
+            if (this.expoente == 0xff && this.significando == 0 && this.sinal == 1) {
+                return new SingleFormat(SFConst.NAN);
+            } else {
+                return new SingleFormat(SFConst.INFINITO);
+            }
+        }
 
         int exp1 = this.expoente;
         long significando1 = this.significando | SFConst.SIGNIFICANDO;
@@ -283,7 +322,7 @@ public class SingleFormat implements Comparable, Cloneable {
             // exp1 = exp2;
         }
 
-        if (sinal1 != sinal2) {// se os operandos tem sinal diferente
+        if (sinal1 != sinal2) {// se os numeros tem sinal diferente
 
             if (significando2 > significando1) {
                 significando1 = -significando1;
@@ -294,8 +333,8 @@ public class SingleFormat implements Comparable, Cloneable {
 
         significando1 = significando1 + significando2;
 
-        //
-        if (sinal1 != sinal2) {//SE OS OPERANDOS TEM SINAL DIFERENTE
+        //se os numeros/operandos tem sinal diferente
+        if (sinal1 != sinal2) {
 
             if (this.expoente < n2.expoente || (this.expoente == n2.expoente && this.significando < n2.significando)) {
                 sinal1 = sinal2;
@@ -325,16 +364,43 @@ public class SingleFormat implements Comparable, Cloneable {
 
         // return new SingleFormat(0, 0, 0);
     }
+    
+    /**
+     * Metodo Oposto, gera o oposto de um numero e auxilia no metodo da subtraçao.
+     * @return Retorna o numero com sinal trocado
+     */
+    
+    public SingleFormat Oposto(){
+    
+        return new SingleFormat ((this.sinal + 1) & 0x1, this.expoente, this.significando); 
+    
+    }
 
     /**
      * Metodo Produto usando o algoritmo de Booth
      *
      * @param n2
-     * @return
+     * @return Retorna o resultado da multiplicaçao no formato IEEE 754
      */
     public SingleFormat Produto(SingleFormat n2) {
 
         //trata casos especiais
+        if (this.expoente == 0xff && this.significando != 0 || n2.expoente == 0xff && n2.significando != 0) {
+            return new SingleFormat(SFConst.NAN);
+        } else if (this.expoente == 0 && this.significando == 0 || n2.expoente == 0 && n2.significando == 0) {
+            if (n2.sinal == this.sinal) {
+                return new SingleFormat(SFConst.ZERO);
+            } else {
+                return new SingleFormat(SFConst.MENOSZERO);
+            }
+        } else if (this.expoente == 0xff && this.significando == 0 || n2.significando == 0xff && n2.significando == 0) {
+            if (this.sinal == n2.sinal) {
+                return new SingleFormat(SFConst.INFINITO);
+            } else if (this.sinal != n2.sinal) {
+                return new SingleFormat(SFConst.MENOS_INFINITO);
+            }
+        }
+
         //  multiplicando | produto(ProdutoEsquerda + ProdutoDireita(Bit0) + BitEXTRA)
         long multiplicando = this.significando + SFConst.SIGNIFICANDO;
         long produtoEsquerda = 0;
@@ -399,22 +465,74 @@ public class SingleFormat implements Comparable, Cloneable {
      * Metodo Divisao
      *
      * @param n2
-     * @return
+     * @return Retornao resultado da divisao no formato IEEE 754
      */
     public SingleFormat Divisao(SingleFormat n2) {
 
-        /*trata casos especiais como: 2/0 retorna infinity  
-        */
-        
-        
-        
+        //trata casos especiais como: 2/0 retorna infinity 
+        //divisao de 0/-0
+        //Um dos numeros/operando eh NAN
+        if (this.expoente == 0xff && this.significando != 0 || n2.expoente == 0xff && n2.significando != 0) {
+            return new SingleFormat(SFConst.NAN);
+        } else if (n2.expoente == 0 && n2.significando == 0 && n2.sinal == 0) {
+            if (this.expoente == 0 && this.significando == 0) {
+                return new SingleFormat(SFConst.NAN);
+            } else if (this.sinal == 0) {
+                return new SingleFormat(SFConst.INFINITO);
+            } else {
+                return new SingleFormat(SFConst.MENOS_INFINITO);
+            }
+        } else if (n2.expoente == 0 && n2.significando == 0 && n2.sinal == 1) {
+            if (this.expoente == 0 && this.significando == 0) {
+                return new SingleFormat(SFConst.NAN);
+            } else if (this.sinal == 1) {
+                return new SingleFormat(SFConst.INFINITO);
+            } else {
+                return new SingleFormat(SFConst.MENOS_INFINITO);
+            }
+        } //Dividendo eh zero ou menos zero
+        else if (this.expoente == 0 && this.significando == 0 && this.sinal == 0) {
+            if (n2.expoente == 0 && n2.significando == 0) {
+                return new SingleFormat(SFConst.NAN);
+            } else if (n2.sinal == 0) {
+                return new SingleFormat(SFConst.ZERO);
+            } else {
+                return new SingleFormat(SFConst.MENOSZERO);
+            }
+        } else if (this.expoente == 0 && this.significando == 0 && this.sinal == 1) {
+            if (n2.expoente == 0 && n2.significando == 0) {
+                return new SingleFormat(SFConst.NAN);
+            } else if (n2.sinal == 1) {
+                return new SingleFormat(SFConst.ZERO);
+            } else {
+                return new SingleFormat(SFConst.MENOSZERO);
+            }
+        } //Um dos numeros/operando eh infinito ou menos infinito
+        else if (this.expoente == 0xff && this.significando == 0) {
+            if (n2.expoente == 0xff && n2.significando == 0) {
+                return new SingleFormat(SFConst.NAN);
+            } else if (this.sinal == n2.sinal) {
+                return new SingleFormat(SFConst.INFINITO);
+            } else if (this.sinal == n2.sinal) {
+                return new SingleFormat(SFConst.MENOS_INFINITO);
+            }
+        } else if (n2.expoente == 0xff && n2.significando == 0) {
+            if (this.expoente == 0xff && this.significando == 0) {
+                return new SingleFormat(SFConst.NAN);
+            } else if (this.sinal == n2.sinal) {
+                return new SingleFormat(SFConst.ZERO);
+            } else if (this.sinal != n2.sinal) {
+                return new SingleFormat(SFConst.MENOSZERO);
+            }
+        }
+
         long s1 = (this.significando | SFConst.SIGNIFICANDO);
         long s2 = (n2.significando | SFConst.SIGNIFICANDO);
-        float divisao = ( (float) s1 / SFConst.SIGNIFICANDO) / ( (float) s2 / SFConst.SIGNIFICANDO);
+        float divisao = ((float) s1 / SFConst.SIGNIFICANDO) / ((float) s2 / SFConst.SIGNIFICANDO);
         //long significando_ = (long)(divisao * SFConst.SIGNIFICANDO);
         int deslocamento = (s1 >= s2) ? 0 : 1;
         //significando_ = (significando_ << deslocamento) & SFConst.BITS_SIGNIFICANDO;
-        long significando_ = ((long)(divisao * SFConst.SIGNIFICANDO) << deslocamento) & SFConst.BITS_SIGNIFICANDO;
+        long significando_ = ((long) (divisao * SFConst.SIGNIFICANDO) << deslocamento) & SFConst.BITS_SIGNIFICANDO;
         int expoente_ = this.expoente - n2.expoente + SFConst.POLARIZACAO - deslocamento;
         int sinal_;
 
@@ -443,9 +561,9 @@ public class SingleFormat implements Comparable, Cloneable {
     }
 
     /**
-     * Gera um numero real em formato simple: sinal + expoente + nantissa
+     * Gera um numero real em formato simple: sinal + expoente + significando
      *
-     * @return O nume no formato double
+     * @return O numero no formato simples
      */
     public double NumeroReal() {
         // fazendo o tramaneto dos casos especias, zero, menos zero, infinito e menos infintio
@@ -504,12 +622,13 @@ public class SingleFormat implements Comparable, Cloneable {
     }
 
     /**
-     * Imprime em uma String, no formato: Simple: Sinal Exponente Significando
+     * Imprime em uma String, no formato: Simples: Sinal Exponente Significando
      *
-     * @return String seguindo o formato Simple: Sinal Expoente Significando
+     * @return String seguindo o formato Simples: Sinal Expoente Significando
      */
     @Override
     public String toString() {
+
         //trata os casos especiais
         if (this.compareTo(SFConst.INFINITO) == 0) {
             return "Infinito" + ": " + sinal + " " + Integer.toBinaryString(expoente) + " " + "00000000000000000000000";
@@ -549,5 +668,6 @@ public class SingleFormat implements Comparable, Cloneable {
         //return sinal + "" + expoente + "" + significando;
 
     }
+   
 
 }
